@@ -3,16 +3,14 @@
 
 from __future__ import division
 
-import rospy
 import sys
+
 import cv2
-import face_detector
-
-import datetime as dt
-
-# Classes from the annotator module
-from sensor_msgs.msg import Image, CameraInfo
+import rospy
 from cv_bridge import CvBridge, CvBridgeError
+from sensor_msgs.msg import Image, CameraInfo
+
+import face_detector
 
 # Debug Helpers
 FAIL_COLOR = '\033[91m'
@@ -138,3 +136,9 @@ class FaceDetector(object):
 		self.image_info_pub = rospy.Publisher(pub_image_info_topic, CameraInfo, queue_size=2) # camera info publisher
 		rospy.spin()
 
+if __name__ == '__main__':
+	try:
+		detector = FaceDetector()
+		detector.run()
+	except rospy.ROSInterruptException:
+		pass
