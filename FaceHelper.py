@@ -1,37 +1,18 @@
 #!/usr/bin/env python
-# This file is responsible for parsing data from the bagfile player.py and the
-# automatic annotator reader.py to combine the info and presenting it to the
-# human in a manner that allows the human to automatically parse what's going on
-# and correctly annotate the data
+# This file is responsible for bridging ROS to the FaceDetector class (built with Caffe)
 
 from __future__ import division
 
 import rospy
-import datetime
 import sys
-import glob
 import cv2
-import threading
-import readline
-import signal
-import os
-import time
-import pickle
 import face_detector
 
-from datetime import datetime as dt
+import datetime as dt
 
 # Classes from the annotator module
-from reader import TimeStampedPeopleDataStream
-from player import BagfilePlayer
-
 from sensor_msgs.msg import Image, CameraInfo
 from cv_bridge import CvBridge, CvBridgeError
-from visualization_msgs.msg import Marker
-from std_msgs.msg import Header
-from dynamixel_msgs.msg import JointState
-
-# Classes
 
 # Debug Helpers
 FAIL_COLOR = '\033[91m'
@@ -114,6 +95,7 @@ class FaceDetector(object):
 			return
 
 		# TODO: it saves a bit of computation to just pass the 4 points instead of calculating width to recalculate those points
+		# TODO: Below I am iterating and drawing bounding boxes. Should I just be passing on points and the center/not_center boolean?
 		for face, points in zip(self.faces, self.keypoint_arrays):
 			x1 = int(face[0])
 			y1 = int(face[1])
@@ -144,7 +126,7 @@ class FaceDetector(object):
 		self.image_pub.publish(image_msg)
 
 
-
+	# TODO do I need to subscribe and publish camera_info if I'm not using it?
 	def run(self,
 			sub_image_topic='/camera/rgb/image_rect_color',
 			sub_image_info_topic='/camera/rgb/camera_info',
@@ -154,12 +136,5 @@ class FaceDetector(object):
 		rospy.Subscriber(sub_image_info_topic, CameraInfo, self._camera_info) # subscribe to image_info for camera info
 		self.image_pub = rospy.Publisher(pub_image_topic, Image, queue_size=2) # image publisher
 		self.image_info_pub = rospy.Publisher(pub_image_info_topic, CameraInfo, queue_size=2) # camera info publisher
-		# rospy.spin()
-
-
-if __name__ == '__main__':
-	helper = AnnotationHelper(*sys.argv[1:])
-	helper.annotate_data()
-
-
+		rospy.spin()
 

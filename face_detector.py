@@ -2,7 +2,10 @@ import sys
 import cv2
 import numpy as np
 import time
-caffe_root = '/Users/andrewsilva/caffe/python'
+# Mac Caffe Link:
+# caffe_root = '/Users/andrewsilva/caffe/python'
+# Ubuntu Caffe Link:
+caffe_root = '/home/asilva/caffe-master/python'
 sys.path.append(caffe_root)
 import caffe
 
@@ -157,9 +160,9 @@ class FaceDetector:
 		self.min_size = 20
 		self.threshold = [0.6, 0.7, 0.7]
 		self.factor = 0.709
-
-		caffe.set_mode_cpu()
-		caffe_model_path = "/Users/andrewsilva/PyCharmProjects/caffe_mutli_view_face_cnn/model"
+		# Mac requires CPU only
+		# caffe.set_mode_cpu()
+		caffe_model_path = "/home/asilva/ws/src/ros_faces/model"
 		self.p_net = caffe.Net(caffe_model_path + "/det1.prototxt", caffe_model_path + "/det1.caffemodel", caffe.TEST)
 		self.r_net = caffe.Net(caffe_model_path + "/det2.prototxt", caffe_model_path + "/det2.caffemodel", caffe.TEST)
 		self.o_net = caffe.Net(caffe_model_path + "/det3.prototxt", caffe_model_path + "/det3.caffemodel", caffe.TEST)
