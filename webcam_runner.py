@@ -1,6 +1,6 @@
 import cv2
-import face_detector
 
+from scripts import face_detector
 
 
 def run():

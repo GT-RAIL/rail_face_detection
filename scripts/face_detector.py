@@ -2,11 +2,12 @@ import sys
 import cv2
 import numpy as np
 import time
+import os
 # Mac Caffe Link:
 # caffe_root = '/Users/andrewsilva/caffe/python'
 # Ubuntu Caffe Link:
-caffe_root = '/home/asilva/caffe-master/python'
-sys.path.append(caffe_root)
+# caffe_root = '/home/asilva/caffe-master/python'
+# sys.path.append(caffe_root)
 import caffe
 
 
@@ -162,7 +163,8 @@ class FaceDetector:
 		self.factor = 0.709
 		# Mac requires CPU only
 		# caffe.set_mode_cpu()
-		caffe_model_path = "/home/asilva/ws/src/ros_faces/model"
+		# Cheap workaround to get to sibling directory
+		caffe_model_path = os.path.dirname(os.path.dirname(os.path.abspath(sys.argv[0]))) + '/model'
 		self.p_net = caffe.Net(caffe_model_path + "/det1.prototxt", caffe_model_path + "/det1.caffemodel", caffe.TEST)
 		self.r_net = caffe.Net(caffe_model_path + "/det2.prototxt", caffe_model_path + "/det2.caffemodel", caffe.TEST)
 		self.o_net = caffe.Net(caffe_model_path + "/det3.prototxt", caffe_model_path + "/det3.caffemodel", caffe.TEST)
