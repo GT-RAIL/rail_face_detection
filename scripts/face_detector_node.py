@@ -77,6 +77,8 @@ class FaceDetector(object):
 		:return: None
 		"""
 
+		header = image_msg.header
+
 		try:
 			image_cv = self.bridge.imgmsg_to_cv2(image_msg, "bgr8")
 		except CvBridgeError as e:
@@ -111,9 +113,12 @@ class FaceDetector(object):
 			except CvBridgeError as e:
 				print e
 
+			image_msg.header = header
 			self.image_pub.publish(image_msg)
+
 		# Instantiate detections object
 		face_arr = Detections()
+		face_arr.header = header
 		# For each face / keypoint set found in the image:
 		for face, points in zip(self.faces, self.keypoint_arrays):
 			msg = Face()
@@ -139,7 +144,8 @@ class FaceDetector(object):
 			pub_image_topic='/face_detector/debug/face_image',
 			pub_face_topic='/face_detector/faces'):
 		rospy.Subscriber(self.image_sub_topic_name, Image, self._parse_image) # subscribe to sub_image_topic and callback parse
-		self.image_pub = rospy.Publisher(pub_image_topic, Image, queue_size=2) # image publisher
+		if self.debug:
+			self.image_pub = rospy.Publisher(pub_image_topic, Image, queue_size=2) # image publisher
 		self.face_pub = rospy.Publisher(pub_face_topic, Detections, queue_size=2) # faces publisher
 		rospy.spin()
 
