@@ -34,7 +34,7 @@ class FaceDetector(object):
 	"""
 
 	def __init__(self):
-		rospy.init_node('detector_node')
+		rospy.init_node('face_detector_node')
 		self.faces = []
 		self.keypoint_arrays = []
 		self.image_datastream = None

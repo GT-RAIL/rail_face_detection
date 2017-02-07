@@ -2,7 +2,7 @@
 	<arg name="image_sub_topic_name" default="/kinect/hd/image_color_rect" />
 	<arg name="debug" default="false" />
 
-	<node pkg="rail_face_detector" type="detector_node.py" name="detector_node">
+	<node pkg="rail_face_detector" type="face_detector_node.py" name="face_detector_node">
 		<param name="image_sub_topic_name" type="string" value="$(arg image_sub_topic_name)" />
 		<param name="debug" type="bool" value="$(arg debug)" />
 	</node>
