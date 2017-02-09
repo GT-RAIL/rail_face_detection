@@ -37,26 +37,10 @@ class FaceDetector(object):
 		rospy.init_node('face_detector_node')
 		self.faces = []
 		self.keypoint_arrays = []
-		self.image_datastream = None
-		self.input_image = None
 		self.bridge = CvBridge()
 		self.face_detector = face_detector.FaceDetector()
 		self.debug = rospy.get_param('~debug', default=False)
 		self.image_sub_topic_name = rospy.get_param('~image_sub_topic_name', default='/kinect/qhd/image_color_rect')
-
-
-	#
-	# def set_faces_datastream(self, datastream):
-	# 	"""
-	# 	Set to None to prevent images from being published
-	# 	"""
-	# 	self.image_datastream = datastream
-	#
-	# 	if datastream is None:
-	# 		self.datastream_index = -1
-	# 	else:
-	# 		self.datastream_index = 1
-	# 		self.faces = self.image_datastream[0]['obj']
 
 	def _draw_bb(self, image, bounding_box, color):
 		start_x = bounding_box['x']
