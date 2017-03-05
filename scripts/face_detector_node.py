@@ -77,12 +77,14 @@ class FaceDetector(object):
 				x2 = int(face[2])
 				y2 = int(face[3])
 				nose = (int(points[2]), int(points[7]))
+				left_eye = (points[1] - face[0])  / float(int(face[2]) - int(face[0]))
+				right_eye = (points[0] - face[0])  / float(int(face[2]) - int(face[0]))
 				x_percent = (nose[0] - x1) / float(x2 - x1)
 				y_percent = (nose[1] - y1) / float(y2 - y1)
 				c = (255, 255, 0)
 				# Black box if looking left or right
-				if x_percent < 0.35 or x_percent > 0.65:
-					c = (0, 0, 0)
+				if (left_eye - right_eye) < 0.45:
+					c = (255, 0, 0)
 				# Black box if looking down
 				if y_percent > 0.65:
 					c = (0, 0, 0)
@@ -113,11 +115,19 @@ class FaceDetector(object):
 			# Forward face detection
 			# TODO: Improve this. Use keypoint relative grouping
 			nose = (int(points[2]), int(points[7]))
-			x_percent = (nose[0] - int(face[0])) / float(int(face[2]) - int(face[0]))
+			left_eye = (points[1] - face[0])  / float(int(face[2]) - int(face[0]))
+			right_eye = (points[0] - face[0])  / float(int(face[2]) - int(face[0]))
+			# left_mouth = (points[9] - face[1]) / float(int(face[3]) - int(face[1]))
+			# right_mouth = (points[8] - face[1]) / float(int(face[3]) - int(face[1]))
+			# avg_mouth = (left_mouth + right_mouth) / 2
+			# x_percent = (nose[0] - int(face[0])) / float(int(face[2]) - int(face[0]))
 			y_percent = (nose[1] - int(face[1])) / float(int(face[3]) - int(face[1]))
+			# print avg_mouth - y_percent
 			# Black box if looking left, right, or down
-			if x_percent < 0.35 or x_percent > 0.65 or y_percent > 0.65:
-				msg.face_forward = 0
+			if (left_eye - right_eye) < 0.4:
+				msg.face_forward = 2
+			elif y_percent > 0.65:
+				msg.face_forward = 3
 			else:
 				msg.face_forward = 1
 			face_arr.faces.append(msg)
