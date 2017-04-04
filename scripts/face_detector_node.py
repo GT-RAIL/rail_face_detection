@@ -135,8 +135,8 @@ class FaceDetector(object):
 		self.face_pub.publish(face_arr)
 
 	def run(self,
-			pub_image_topic='/face_detector/debug/face_image',
-			pub_face_topic='/face_detector/faces'):
+			pub_image_topic='~debug/face_image',
+			pub_face_topic='~faces'):
 		rospy.Subscriber(self.image_sub_topic_name, Image, self._parse_image) # subscribe to sub_image_topic and callback parse
 		if self.debug:
 			self.image_pub = rospy.Publisher(pub_image_topic, Image, queue_size=2) # image publisher
