@@ -42,6 +42,8 @@ class FaceDetector(object):
 		self.face_detector = face_detector.FaceDetector()
 		self.debug = rospy.get_param('~debug', default=False)
 		self.image_sub_topic_name = rospy.get_param('~image_sub_topic_name', default='/kinect/qhd/image_color_rect')
+		self.debug_image_sub_topic_name = rospy.get_param('~debug_image_sub_topic_name', default=self.image_sub_topic_name)
+		self.debug_image = None # Should have a lock for this
 		self.use_compressed_image = rospy.get_param('~use_compressed_image', default=False)
 
 	def _draw_bb(self, image, bounding_box, color):
@@ -88,6 +90,7 @@ class FaceDetector(object):
 		self.faces, self.keypoint_arrays = self.face_detector.find_faces(image_cv)
 
 		if self.debug:
+			self.debug_image = []
 			for face, points in zip(self.faces, self.keypoint_arrays):
 				x1 = int(face[0])
 				y1 = int(face[1])
@@ -106,18 +109,25 @@ class FaceDetector(object):
 				if y_percent > 0.65:
 					c = (0, 0, 0)
 
-				image_cv = self._draw_bb(image_cv, {'x': x1,
-													'y': y1,
-													'w': x2-x1,
-													'h': y2-y1}, c)
+				if self.debug_image_sub_topic_name != self.image_sub_topic_name:
+					self.debug_image.append((
+						{'x': x1, 'y': y1, 'w': x2-x1, 'h': y2-y1},
+						c
+					))
+				else:
+					image_cv = self._draw_bb(image_cv, {'x': x1,
+														'y': y1,
+														'w': x2-x1,
+														'h': y2-y1}, c)
 
-			try:
-				image_msg = self.bridge.cv2_to_imgmsg(image_cv, "bgr8")
-			except CvBridgeError as e:
-				print e
+			if self.debug_image_sub_topic_name == self.image_sub_topic_name:
+				try:
+					image_msg = self.bridge.cv2_to_imgmsg(image_cv, "bgr8")
+				except CvBridgeError as e:
+					print e
 
-			image_msg.header = header
-			self.image_pub.publish(image_msg)
+				image_msg.header = header
+				self.image_pub.publish(image_msg)
 
 		# Instantiate detections object
 		face_arr = Detections()
@@ -151,13 +161,33 @@ class FaceDetector(object):
 
 		self.face_pub.publish(face_arr)
 
+	def _debug_display(self, image_msg):
+		"""Displays the debug image if the main display does not show it"""
+		image_cv = self._convert_msg_to_image(image_msg)
+		if image_cv is None or self.debug_image is None:
+			return
+
+		for face in self.debug_image:
+			image_cv = self._draw_bb(
+				image_cv,
+				{k: 2*v for k,v in face[0].iteritems()},
+				face[1]
+			)
+
+		image_msg = self.bridge.cv2_to_imgmsg(image_cv, "bgr8")
+		self.image_pub.publish(image_msg)
+
 	def run(self,
 			pub_image_topic='~debug/face_image',
 			pub_face_topic='~faces'):
 		if not self.use_compressed_image:
 			rospy.Subscriber(self.image_sub_topic_name, Image, self._parse_image) # subscribe to sub_image_topic and callback parse
+			if self.debug and self.debug_image_sub_topic_name != self.image_sub_topic_name:
+				rospy.Subscriber(self.debug_image_sub_topic_name, Image, self._debug_display)
 		else:
 			rospy.Subscriber(self.image_sub_topic_name+'/compressed', CompressedImage, self._parse_image)
+			if self.debug and self.debug_image_sub_topic_name != self.image_sub_topic_name:
+				rospy.Subscriber(self.debug_image_sub_topic_name+'/compressed', CompressedImage, self._debug_display)
 		if self.debug:
 			self.image_pub = rospy.Publisher(pub_image_topic, Image, queue_size=2) # image publisher
 		self.face_pub = rospy.Publisher(pub_face_topic, Detections, queue_size=2) # faces publisher
