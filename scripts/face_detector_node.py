@@ -7,8 +7,9 @@ import sys
 
 import cv2
 import rospy
+import numpy as np
 from cv_bridge import CvBridge, CvBridgeError
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import Image, CompressedImage
 from rail_face_detector.msg import Face, Detections
 
 import face_detector
@@ -41,6 +42,7 @@ class FaceDetector(object):
 		self.face_detector = face_detector.FaceDetector()
 		self.debug = rospy.get_param('~debug', default=False)
 		self.image_sub_topic_name = rospy.get_param('~image_sub_topic_name', default='/kinect/qhd/image_color_rect')
+		self.use_compressed_image = rospy.get_param('~use_compressed_image', default=False)
 
 	def _draw_bb(self, image, bounding_box, color):
 		start_x = bounding_box['x']
@@ -54,6 +56,23 @@ class FaceDetector(object):
 					  thickness=3)
 		return image
 
+	def _convert_msg_to_image(self, image_msg):
+		"""
+		Convert an incoming image message (compressed or otherwise) into a cv2
+		image
+		"""
+		if not self.use_compressed_image:
+			try:
+				image_cv = self.bridge.imgmsg_to_cv2(image_msg, "bgr8")
+			except CvBridgeError as e:
+				print e
+				return None
+		else:
+			image_np = np.fromstring(image_msg.data, np.uint8)
+			image_cv = cv2.imdecode(image_np, cv2.CV_LOAD_IMAGE_COLOR)
+
+		return image_cv
+
 	def _parse_image(self, image_msg):
 		"""
 		Take in an image and draw a bounding box within it
@@ -63,10 +82,8 @@ class FaceDetector(object):
 
 		header = image_msg.header
 
-		try:
-			image_cv = self.bridge.imgmsg_to_cv2(image_msg, "bgr8")
-		except CvBridgeError as e:
-			print e
+		image_cv = self._convert_msg_to_image(image_msg)
+		if image_cv is None:
 			return
 		self.faces, self.keypoint_arrays = self.face_detector.find_faces(image_cv)
 
@@ -137,7 +154,10 @@ class FaceDetector(object):
 	def run(self,
 			pub_image_topic='~debug/face_image',
 			pub_face_topic='~faces'):
-		rospy.Subscriber(self.image_sub_topic_name, Image, self._parse_image) # subscribe to sub_image_topic and callback parse
+		if not self.use_compressed_image:
+			rospy.Subscriber(self.image_sub_topic_name, Image, self._parse_image) # subscribe to sub_image_topic and callback parse
+		else:
+			rospy.Subscriber(self.image_sub_topic_name+'/compressed', CompressedImage, self._parse_image)
 		if self.debug:
 			self.image_pub = rospy.Publisher(pub_image_topic, Image, queue_size=2) # image publisher
 		self.face_pub = rospy.Publisher(pub_face_topic, Detections, queue_size=2) # faces publisher
