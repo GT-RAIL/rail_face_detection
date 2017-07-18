@@ -6,8 +6,8 @@ import time
 # Mac Caffe Link:
 # caffe_root = '/Users/andrewsilva/caffe/python'
 # Ubuntu Caffe Link:
-# caffe_root = '/home/asilva/caffe-master/python'
-# sys.path.append(caffe_root)
+caffe_root = '/home/asilva/caffe/python'
+sys.path.append(caffe_root)
 import caffe
 
 
