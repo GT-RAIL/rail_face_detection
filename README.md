@@ -28,8 +28,6 @@ int16 right_mouth_y     # Y coordinate of the right corner of the mouth
  * [Testing your Installation](#testing-your-installation)
  * [ROS Nodes](#ros-nodes)
  * [Startup](#startup)
- * [Building with CUDA](#building-with-cuda)
- * [Scope for Improvement](#scope-for-improvement)
 
 ## Installation
 
@@ -61,7 +59,7 @@ Wrapper for object detection through ROS services.  Relevant services and parame
 * **Topics**
   * `detector_node/faces` ([rail_face_detector/faces](msg/Detections.msg))
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Topic with face detections performed in the background by running on images as they come in the subscriber.
-* `detector_node/debug/face_images` ([rail_face_detector/debug/face_images])
+  * `detector_node/debug/face_images` ([rail_face_detector/debug/face_images])
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Topic with face detections visualized on incoming images as they come in from the subscriber. Only published if debug=true.
 * **Parameters**
   * `image_sub_topic_name` (`string`, default: "/kinect/qhd/image_color_rect")
@@ -77,5 +75,5 @@ Wrapper for object detection through ROS services.  Relevant services and parame
 
 Simply run the launch file to bring up all of the package's functionality (default: use Scene Queries only):
 ```
-roslaunch rail_object_detector detector.launch
+roslaunch rail_face_detector detector.launch
 ```
