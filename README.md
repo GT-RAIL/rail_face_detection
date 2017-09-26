@@ -49,6 +49,7 @@ The node should now run properly.
 ```
 roslaunch rail_face_detector detector.launch image_sub_topic_name:=/kinect/qhd/image_color_rect debug:=true
 ```
+You can also just test the network by running the `webcam_runner.py` script in the home directory of this package. This uses OpenCV to pull images from your webcam, highlight faces and keypoints, and show the images in real time.
 
 ## ROS Nodes
 
