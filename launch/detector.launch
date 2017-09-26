@@ -1,6 +1,7 @@
 <launch>
 	<arg name="image_sub_topic_name" default="/kinect/qhd/image_color_rect" />
 	<arg name="debug" default="false" />
+	<arg name="use_gpu" default="true" />
 
 	<node pkg="rail_face_detector" type="face_detector_node.py" name="face_detector_node" output="screen">
 		<param name="image_sub_topic_name" type="string" value="$(arg image_sub_topic_name)" />

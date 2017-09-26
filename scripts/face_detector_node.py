@@ -39,12 +39,13 @@ class FaceDetector(object):
         self.faces = []
         self.keypoint_arrays = []
         self.bridge = CvBridge()
-        self.face_detector = face_detector.FaceDetector()
         self.debug = rospy.get_param('~debug', default=False)
         self.image_sub_topic_name = rospy.get_param('~image_sub_topic_name', default='/kinect/qhd/image_color_rect')
         self.debug_image_sub_topic_name = rospy.get_param('~debug_image_sub_topic_name', default=self.image_sub_topic_name)
+        use_gpu = rospy.get_param('~use_gpu', default=True)
         self.debug_image = None # Should have a lock for this
         self.use_compressed_image = rospy.get_param('~use_compressed_image', default=False)
+        self.face_detector = face_detector.FaceDetector(use_gpu)
 
     def _draw_bb(self, image, bounding_box, color):
         start_x = bounding_box['x']
@@ -137,24 +138,16 @@ class FaceDetector(object):
             msg.top_left_y = int(face[1])
             msg.bot_right_x = int(face[2])
             msg.bot_right_y = int(face[3])
-            # Forward face detection
-            # TODO: Improve this. Use keypoint relative grouping
-            nose = (int(points[2]), int(points[7]))
-            left_eye = (points[1] - face[0])  / float(int(face[2]) - int(face[0]))
-            right_eye = (points[0] - face[0])  / float(int(face[2]) - int(face[0]))
-            # left_mouth = (points[9] - face[1]) / float(int(face[3]) - int(face[1]))
-            # right_mouth = (points[8] - face[1]) / float(int(face[3]) - int(face[1]))
-            # avg_mouth = (left_mouth + right_mouth) / 2
-            # x_percent = (nose[0] - int(face[0])) / float(int(face[2]) - int(face[0]))
-            y_percent = (nose[1] - int(face[1])) / float(int(face[3]) - int(face[1]))
-            # print avg_mouth - y_percent
-            # Black box if looking left, right, or down
-            if (left_eye - right_eye) < 0.4:
-                msg.face_forward = 2
-            elif y_percent > 0.65:
-                msg.face_forward = 3
-            else:
-                msg.face_forward = 1
+            msg.nose_x = int(points[2])
+            msg.nose_y = int(points[7])
+            msg.left_eye_x = int(points[1])
+            msg.left_eye_y = int(points[6])
+            msg.right_eye_x = int(points[0])
+            msg.right_eye_y = int(points[5])
+            msg.left_mouth_x = int(points[4])
+            msg.left_mouth_y = int(points[9])
+            msg.right_mouth_x = int(points[3])
+            msg.right_mouth_y = int(points[8])
             face_arr.faces.append(msg)
 
         self.face_pub.publish(face_arr)
