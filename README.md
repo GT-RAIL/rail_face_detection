@@ -10,7 +10,7 @@ The message type coming back from the face detector is a Detections.msg which co
 int16 top_left_x        # X pixel value of top-left corner of bounding box
 int16 top_left_y        # Y pixel value of top-left corner of bounding box
 int16 bot_right_x       # X pixel value of bottom-right corner of bounding box
-int16 bot_right_y 		  # Y pixel value of bottom-right corner of bounding box
+int16 bot_right_y       # Y pixel value of bottom-right corner of bounding box
 int16 nose_x            # X coordinate of the nose
 int16 nose_y            # Y coordinate of the nose
 int16 left_eye_x        # X coordinate of the left eye
