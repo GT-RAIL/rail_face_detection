@@ -41,9 +41,7 @@ class FaceDetector(object):
         self.bridge = CvBridge()
         self.debug = rospy.get_param('~debug', default=False)
         self.image_sub_topic_name = rospy.get_param('~image_sub_topic_name', default='/kinect/qhd/image_color_rect')
-        self.debug_image_sub_topic_name = rospy.get_param('~debug_image_sub_topic_name', default=self.image_sub_topic_name)
         use_gpu = rospy.get_param('~use_gpu', default=True)
-        self.debug_image = None # Should have a lock for this
         self.use_compressed_image = rospy.get_param('~use_compressed_image', default=False)
         self.face_detector = face_detector.FaceDetector(use_gpu)
 
@@ -89,44 +87,38 @@ class FaceDetector(object):
             return
         self.faces, self.keypoint_arrays = self.face_detector.find_faces(image_cv)
         if self.debug:
-            self.debug_image = []
+            c = (0, 255, 0)
             for face, points in zip(self.faces, self.keypoint_arrays):
                 x1 = int(face[0])
                 y1 = int(face[1])
                 x2 = int(face[2])
                 y2 = int(face[3])
-                nose = (int(points[2]), int(points[7]))
-                left_eye = (points[1] - face[0])  / float(int(face[2]) - int(face[0]))
-                right_eye = (points[0] - face[0])  / float(int(face[2]) - int(face[0]))
-                x_percent = (nose[0] - x1) / float(x2 - x1)
-                y_percent = (nose[1] - y1) / float(y2 - y1)
-                c = (255, 255, 0)
-                # Black box if looking left or right
-                if (left_eye - right_eye) < 0.45:
-                    c = (255, 0, 0)
-                # Black box if looking down
-                if y_percent > 0.65:
-                    c = (0, 0, 0)
+                nose_x = int(points[2])
+                nose_y = int(points[7])
+                left_eye_x = int(points[1])
+                left_eye_y = int(points[6])
+                right_eye_x = int(points[0])
+                right_eye_y = int(points[5])
+                left_mouth_x = int(points[4])
+                left_mouth_y = int(points[9])
+                right_mouth_x = int(points[3])
+                right_mouth_y = int(points[8])
+                image_cv = self._draw_bb(image_cv, {'x': x1,
+                                                    'y': y1,
+                                                    'w': x2-x1,
+                                                    'h': y2-y1}, c)
+                cv2.circle(image_cv, (nose_x, nose_y), 3, c, thickness=1)
+                cv2.circle(image_cv, (left_eye_x, left_eye_y), 3, c, thickness=1)
+                cv2.circle(image_cv, (right_eye_x, right_eye_y), 3, c, thickness=1)
+                cv2.circle(image_cv, (left_mouth_x, left_mouth_y), 3, c, thickness=1)
+                cv2.circle(image_cv, (right_mouth_x, right_mouth_y), 3, c, thickness=1)
+            try:
+                image_msg = self.bridge.cv2_to_imgmsg(image_cv, "bgr8")
+            except CvBridgeError as e:
+                print e
 
-                if self.debug_image_sub_topic_name != self.image_sub_topic_name:
-                    self.debug_image.append((
-                        {'x': x1, 'y': y1, 'w': x2-x1, 'h': y2-y1},
-                        c
-                    ))
-                else:
-                    image_cv = self._draw_bb(image_cv, {'x': x1,
-                                                        'y': y1,
-                                                        'w': x2-x1,
-                                                        'h': y2-y1}, c)
-
-            if self.debug_image_sub_topic_name == self.image_sub_topic_name:
-                try:
-                    image_msg = self.bridge.cv2_to_imgmsg(image_cv, "bgr8")
-                except CvBridgeError as e:
-                    print e
-
-                image_msg.header = header
-                self.image_pub.publish(image_msg)
+            image_msg.header = header
+            self.image_pub.publish(image_msg)
 
         # Instantiate detections object
         face_arr = Detections()
@@ -152,33 +144,13 @@ class FaceDetector(object):
 
         self.face_pub.publish(face_arr)
 
-    def _debug_display(self, image_msg):
-        """Displays the debug image if the main display does not show it"""
-        image_cv = self._convert_msg_to_image(image_msg)
-        if image_cv is None or self.debug_image is None:
-            return
-
-        for face in self.debug_image:
-            image_cv = self._draw_bb(
-                image_cv,
-                {k: 2*v for k,v in face[0].iteritems()},
-                face[1]
-            )
-
-        image_msg = self.bridge.cv2_to_imgmsg(image_cv, "bgr8")
-        self.image_pub.publish(image_msg)
-
     def run(self,
             pub_image_topic='~debug/face_image',
             pub_face_topic='~faces'):
         if not self.use_compressed_image:
             rospy.Subscriber(self.image_sub_topic_name, Image, self._parse_image) # subscribe to sub_image_topic and callback parse
-            if self.debug and self.debug_image_sub_topic_name != self.image_sub_topic_name:
-                rospy.Subscriber(self.debug_image_sub_topic_name, Image, self._debug_display)
         else:
             rospy.Subscriber(self.image_sub_topic_name+'/compressed', CompressedImage, self._parse_image)
-            if self.debug and self.debug_image_sub_topic_name != self.image_sub_topic_name:
-                rospy.Subscriber(self.debug_image_sub_topic_name+'/compressed', CompressedImage, self._debug_display)
         if self.debug:
             self.image_pub = rospy.Publisher(pub_image_topic, Image, queue_size=2) # image publisher
         self.face_pub = rospy.Publisher(pub_face_topic, Detections, queue_size=2) # faces publisher

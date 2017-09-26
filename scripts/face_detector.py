@@ -317,6 +317,6 @@ class FaceDetector:
                     if len(pick) > 0:
                         total_boxes = total_boxes[pick, :]
                         points = points[pick, :]
-        print 'finding faces takes:', time.time() - start_time
+        # print 'finding faces takes:', time.time() - start_time
 
         return total_boxes, points
