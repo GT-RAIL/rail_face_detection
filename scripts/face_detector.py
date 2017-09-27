@@ -3,11 +3,12 @@ import cv2
 import numpy as np
 import os
 import time
+# If Caffe is not in your PYTHONPATH, point caffe_root to your '/caffe/python' directory and uncomment the sys.path line
 # Mac Caffe Link:
 # caffe_root = '/Users/andrewsilva/caffe/python'
 # Ubuntu Caffe Link:
-caffe_root = '/home/asilva/caffe/python'
-sys.path.append(caffe_root)
+# caffe_root = '/home/asilva/caffe/python'
+# sys.path.append(caffe_root)
 import caffe
 
 
@@ -157,10 +158,11 @@ def rerec(bboxA):
 
 
 class FaceDetector:
-    def __init__(self):
+    def __init__(self, use_gpu=True):
         self.min_size = 20
         self.threshold = [0.6, 0.7, 0.7]
         self.factor = 0.709
+        self.use_gpu = use_gpu
         # Mac requires CPU only
         # caffe.set_mode_cpu()
         # Cheap workaround to get to sibling directory
@@ -170,8 +172,9 @@ class FaceDetector:
         self.o_net = caffe.Net(caffe_model_path + "/det3.prototxt", caffe_model_path + "/det3.caffemodel", caffe.TEST)
 
     def find_faces(self, input_image):
-        caffe.set_mode_gpu()
-        caffe.set_device(0)
+        if self.use_gpu:
+            caffe.set_mode_gpu()
+            caffe.set_device(0)
         start_time = time.time()
         factor_count = 0
         total_boxes = np.zeros((0, 9), np.float)
@@ -314,6 +317,6 @@ class FaceDetector:
                     if len(pick) > 0:
                         total_boxes = total_boxes[pick, :]
                         points = points[pick, :]
-        print 'finding faces takes:', time.time() - start_time
+        # print 'finding faces takes:', time.time() - start_time
 
         return total_boxes, points
