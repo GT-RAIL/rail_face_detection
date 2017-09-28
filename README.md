@@ -3,7 +3,7 @@ Face detection node using caffe and python
 
 ## Two Minute Intro
 
-This detector uses [Caffe](http://caffe.berkeleyvision.org/) to perform face detection. It publishes faces found in images from a subscribed image topic.
+This detector uses [Caffe](http://caffe.berkeleyvision.org/) to perform face detection. It publishes faces found in images from a subscribed image topic. The face detector can be found here: https://github.com/kpzhang93/MTCNN_face_detection_alignment.
 
 The message type coming back from the face detector is a Detections.msg which contains an array of Face.msg objects. Each Face.msg has:
 ```
