@@ -7,7 +7,7 @@ import time
 # Mac Caffe Link:
 # caffe_root = '/Users/andrewsilva/caffe/python'
 # Ubuntu Caffe Link:
-# caffe_root = '/home/asilva/caffe/python'
+# caffe_root = '/home/banerjs/Libraries/BVLC/caffe/python'
 # sys.path.append(caffe_root)
 import caffe
 
@@ -247,9 +247,9 @@ class FaceDetector:
             # swap 3 for numbox?
             tempimg = np.zeros((numbox, 24, 24, 3))
             for k in range(numbox):
-                tmp = np.zeros((tmph[k], tmpw[k], 3))
+                tmp = np.zeros((int(tmph[k]), int(tmpw[k]), 3))
 
-                tmp[dy[k]:edy[k] + 1, dx[k]:edx[k] + 1] = input_image[y[k]:ey[k] + 1, x[k]:ex[k] + 1]
+                tmp[int(dy[k]):int(edy[k]) + 1, int(dx[k]):int(edx[k]) + 1] = input_image[int(y[k]):int(ey[k]) + 1, int(x[k]):int(ex[k]) + 1]
 
                 tempimg[k, :, :, :] = cv2.resize(tmp, (24, 24))
 
@@ -285,8 +285,8 @@ class FaceDetector:
 
                 tempimg = np.zeros((numbox, 48, 48, 3))
                 for k in range(numbox):
-                    tmp = np.zeros((tmph[k], tmpw[k], 3))
-                    tmp[dy[k]:edy[k] + 1, dx[k]:edx[k] + 1] = input_image[y[k]:ey[k] + 1, x[k]:ex[k] + 1]
+                    tmp = np.zeros((int(tmph[k]), int(tmpw[k]), 3))
+                    tmp[int(dy[k]):int(edy[k]) + 1, int(dx[k]):int(edx[k]) + 1] = input_image[int(y[k]):int(ey[k]) + 1, int(x[k]):int(ex[k]) + 1]
                     tempimg[k, :, :, :] = cv2.resize(tmp, (48, 48))
                 tempimg = 2 * tempimg / 255 - 1
 
