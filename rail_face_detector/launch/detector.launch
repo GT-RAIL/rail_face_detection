@@ -7,5 +7,7 @@
 	<node pkg="rail_face_detector" type="face_detector_node.py" name="face_detector_node" output="screen">
 		<param name="image_sub_topic_name" type="string" value="$(arg image_sub_topic_name)" />
 		<param name="debug" type="bool" value="$(arg debug)" />
+    <param name="use_gpu" value="$(arg use_gpu)" />
+    <param name="use_compressed_image" value="$(arg use_compressed_image)" />
 	</node>
 </launch>

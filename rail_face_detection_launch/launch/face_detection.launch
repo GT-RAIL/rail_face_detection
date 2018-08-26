@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <!-- Image topic names. TODO: Use eval in a future release. Indigo does not have it -->
+  <arg name="camera" default="head_camera" />
+  <arg name="rgb_ns" default="rgb" />
+  <arg name="depth_ns" default="depth_registered" />
+  <arg name="image_topic" default="image_rect_color" />
+  <arg name="depth_topic" default="image_raw" />
+  <arg name="image_sub_topic_name" default="/$(arg camera)/$(arg rgb_ns)/$(arg image_topic)" />
+  <arg name="depth_sub_topic_name" default="/$(arg camera)/$(arg depth_ns)/$(arg depth_topic)" />
+
+  <!-- TF frames -->
+  <arg name="fixed_frame" default="head_camera_rgb_optical_frame" />
+
+  <!-- Debug -->
+  <arg name="debug" default="false" />
+
+  <!-- Processing params. For each param, we note the detectors that use them -->
+
+  <!-- Used by RAIL -->
+  <arg name="use_gpu" default="true" />
+  <arg name="use_compressed_image" default="false" />
+
+  <!-- Used by WG -->
+  <arg name="paramfile_classifier" default="$(find face_detector)/param/classifier.yaml" />
+
+  <!-- Finally, args for which detectors to use -->
+  <arg name="start_all" default="false" />
+  <arg name="wg_detector" default="$(arg start_all)" />
+  <arg name="rail_detector" default="$(arg start_all)" />
+
+  <!-- Then start the individual detectors. -->
+
+  <!-- WG detector -->
+  <include file="$(find rail_face_detection_launch)/launch/wg_face_detector.launch" if="$(arg wg_detector)">
+    <arg name="camera" value="$(arg camera)" />
+    <arg name="rgb_ns" value="$(arg rgb_ns)" />
+    <arg name="image_topic" value="$(arg image_topic)" />
+    <arg name="depth_topic" value="$(arg depth_topic)" />
+    <arg name="depth_ns" value="$(arg depth_ns)" />
+    <arg name="fixed_frame" value="$(arg fixed_frame)" />
+    <arg name="paramfile_classifier" value="$(arg paramfile_classifier)"/>
+    <arg name="debug" value="$(arg debug)" />
+  </include>
+
+  <!-- RAIL detector -->
+  <include file="$(find rail_face_detector)/launch/detector.launch" if="$(arg rail_detector)">
+    <arg name="image_sub_topic_name" value="$(arg image_sub_topic_name)" />
+    <arg name="use_gpu" value="$(arg use_gpu)" />
+    <arg name="use_compressed_image" value="$(arg use_compressed_image)" />
+    <arg name="debug" value="$(arg debug)" />
+  </include>
+
+</launch>

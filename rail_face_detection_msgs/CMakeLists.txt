@@ -14,12 +14,6 @@ add_message_files(
     Detections.msg
 )
 
-add_service_files(
-  DIRECTORY srv
-  FILES
-  ImageService.srv
-)
-
 generate_messages(
   DEPENDENCIES
   sensor_msgs
