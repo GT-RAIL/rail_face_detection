@@ -10,7 +10,7 @@ import rospy
 import numpy as np
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image, CompressedImage
-from rail_face_detector_msgs.msg import Face, Detections
+from rail_face_detection_msgs.msg import Face, Detections
 
 import face_detector
 

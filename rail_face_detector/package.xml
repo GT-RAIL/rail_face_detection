@@ -12,7 +12,7 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <depend>rospy</depend>
-  <depend>rail_face_detector_msgs</depend>
+  <depend>rail_face_detection_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>std_msgs</depend>
   <depend>cv_bridge</depend>
