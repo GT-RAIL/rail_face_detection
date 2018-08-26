@@ -5,30 +5,11 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   cv_bridge
   std_msgs
-  message_generation
-)
-
-add_message_files(
-    DIRECTORY msg
-    FILES
-    Face.msg
-    Detections.msg
-)
-
-add_service_files(
-  DIRECTORY srv
-  FILES
-  ImageService.srv
-)
-
-generate_messages(
-  DEPENDENCIES
-  sensor_msgs
-  std_msgs
+  rail_face_detector_msgs
 )
 
 catkin_package(
-  CATKIN_DEPENDS rospy sensor_msgs cv_bridge message_runtime
+  CATKIN_DEPENDS rospy sensor_msgs cv_bridge rail_face_detector_msgs
 )
 
 include_directories(

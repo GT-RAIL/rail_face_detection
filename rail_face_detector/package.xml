@@ -1,6 +1,6 @@
-<package>
+<package format="2">
   <name>rail_face_detector</name>
-  <version>0.0.2</version>
+  <version>1.0.1</version>
   <description>
     This package provides face detection.
   </description>
@@ -11,14 +11,10 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <build_depend>rospy</build_depend>
-  <build_depend>sensor_msgs</build_depend>
-  <build_depend>cv_bridge</build_depend>
-  <build_depend>message_generation</build_depend>
-
-  <run_depend>rospy</run_depend>
-  <run_depend>sensor_msgs</run_depend>
-  <run_depend>cv_bridge</run_depend>
-  <run_depend>message_runtime</run_depend>
+  <depend>rospy</depend>
+  <depend>rail_face_detector_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>cv_bridge</depend>
 
 </package>
