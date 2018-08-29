@@ -5,7 +5,7 @@ Face detection node using caffe and python
 
 This detector uses [Caffe](http://caffe.berkeleyvision.org/) to perform face detection. It publishes faces found in images from a subscribed image topic. The face detector can be found here: https://github.com/kpzhang93/MTCNN_face_detection_alignment.
 
-The message type coming back from the face detector is a Detections.msg which contains an array of Face.msg objects. Each Face.msg has:
+The message type coming back from the face detector is a Detections.msg which contains an array of [Face.msg](../rail_face_detection_msgs/msg/Face.msg) objects. Each Face.msg has:
 ```
 int16 top_left_x        # X pixel value of top-left corner of bounding box
 int16 top_left_y        # Y pixel value of top-left corner of bounding box
@@ -58,9 +58,9 @@ You can also just test the network by running the `webcam_runner.py` script in t
 Wrapper for object detection through ROS services.  Relevant services and parameters are as follows:
 
 * **Topics**
-  * `detector_node/faces` ([rail_face_detector/faces](msg/Detections.msg))
+  * `detector_node/faces` ([rail_face_detector/faces](../rail_face_detection_msgs/msg/Detections.msg))
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Topic with face detections performed in the background by running on images as they come in the subscriber.
-  * `detector_node/debug/face_images` ([rail_face_detector/debug/face_images])
+  * `detector_node/debug/face_images` (sensor_msgs/Image)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Topic with face detections visualized on incoming images as they come in from the subscriber. Only published if debug=true.
 * **Parameters**
   * `image_sub_topic_name` (`string`, default: "/kinect/qhd/image_color_rect")
