@@ -1,0 +1,21 @@
+<package format="2">
+  <name>rail_face_detector</name>
+  <version>1.0.0</version>
+  <description>
+    This package provides face detection.
+  </description>
+  <author email="banerjs.sid@gmail.com">Siddhartha Banerjee</author>
+  <author email="andrew.silva@gatech.edu">Andrew Silva</author>
+  <maintainer email="banerjs.sid@gmail.com">Siddhartha Banerjee</maintainer>
+  <maintainer email="andrew.silva@gatech.edu">Andrew Silva</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>rospy</depend>
+  <depend>rail_face_detection_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>cv_bridge</depend>
+
+</package>

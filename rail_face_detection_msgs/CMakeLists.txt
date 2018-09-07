@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(rail_face_detector)
+project(rail_face_detection_msgs)
 
 find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
-  cv_bridge
   std_msgs
   message_generation
 )
@@ -15,12 +14,6 @@ add_message_files(
     Detections.msg
 )
 
-add_service_files(
-  DIRECTORY srv
-  FILES
-  ImageService.srv
-)
-
 generate_messages(
   DEPENDENCIES
   sensor_msgs
@@ -28,9 +21,5 @@ generate_messages(
 )
 
 catkin_package(
-  CATKIN_DEPENDS rospy sensor_msgs cv_bridge message_runtime
-)
-
-include_directories(
-  ${catkin_INCLUDE_DIRS}
+  CATKIN_DEPENDS sensor_msgs std_msgs
 )
