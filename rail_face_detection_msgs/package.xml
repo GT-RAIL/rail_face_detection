@@ -1,13 +1,14 @@
 <package format="2">
   <name>rail_face_detection_msgs</name>
-  <version>1.0.1</version>
+  <version>1.0.0</version>
   <description>
     This package provides face detection.
   </description>
-  <maintainer email="asilva9@gatech.edu">Andrew Silva</maintainer>
-  <url type="website">https://github.com/GT-RAIL/rail_face_detector</url>
+  <author email="banerjs.sid@gmail.com">Siddhartha Banerjee</author>
+  <author email="andrew.silva@gatech.edu">Andrew Silva</author>
+  <maintainer email="banerjs.sid@gmail.com">Siddhartha Banerjee</maintainer>
+  <maintainer email="andrew.silva@gatech.edu">Andrew Silva</maintainer>
   <license>MIT</license>
-  <author>Andrew Silva</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 
