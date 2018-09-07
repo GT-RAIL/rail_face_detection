@@ -2,8 +2,8 @@
 Changelog for package rail_face_detector
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.1 (2018-09-07)
+------------------
 * Added a metapackage
 * Created a face detector unified launch
 * Create a separate package for the messages
