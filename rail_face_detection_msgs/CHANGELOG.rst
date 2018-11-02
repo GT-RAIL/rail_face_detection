@@ -2,6 +2,10 @@
 Changelog for package rail_face_detection_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Renamed the default branch
+
 1.0.1 (2018-09-07)
 ------------------
 * Added a metapackage
