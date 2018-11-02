@@ -1,6 +1,6 @@
 # RAIL Face Detection Metapackage
 
-[![Build Status](https://travis-ci.org/GT-RAIL/rail_face_detection.svg?branch=develop)](https://travis-ci.org/GT-RAIL/rail_face_detection)
+[![Build Status](https://travis-ci.org/GT-RAIL/rail_face_detection.svg?branch=indigo-devel)](https://travis-ci.org/GT-RAIL/rail_face_detection)
 
 This repository contains nodes and packages that we use for face detection. All methods of face detection publish faces in the message formats defined in [`rail_face_detection_msgs`](rail_face_detection_msgs/).
 
